@@ -22,11 +22,6 @@ namespace DCTHashZ
     /// </summary>
     public class DCTHash : IDisposable
     {
-
-        /// <summary>
-        /// Событие завершения работ по генерации хешей
-        /// </summary>
-        public static event CompleteCenerationEventHadnler CompleteCeneration;
         /// <summary>
         /// Событие обновления статусов создания хешей
         /// </summary>
@@ -53,26 +48,13 @@ namespace DCTHashZ
         }
 
       
-
-        /// <summary>
-        /// Метод вызова события завершения работ по генерации хешей
-        /// </summary>
-        /// <param name="taskList">Список завершённых задач</param>
-        internal static void InvokeCompleteCeneration(List<CreateHashTask> taskList) =>
-            //Вызываем внешний ивент
-            CompleteCeneration?.Invoke(taskList);
-
         /// <summary>
         /// Метод вызова события обновления статусов создания хешей
         /// </summary>
         /// <param name="waitCount">Количество ожидающих выполнения задач</param>
-        /// <param name="inWorkCount">Количество задач в работе</param>
-        /// <param name="completeCount">Количество завершённых задач</param>
-        /// <param name="count">Общее количество задач</param>
-        internal static void InvokeUpdateCreationStatus(int waitCount,
-            int inWorkCount, int completeCount, int count) =>
+        internal static void InvokeUpdateCreationStatus(int waitCount) =>
             //Вызываем внешний ивент
-            UpdateCreationStatus?.Invoke(waitCount, inWorkCount, completeCount, count);
+            UpdateCreationStatus?.Invoke(waitCount);
 
 
 
@@ -88,9 +70,10 @@ namespace DCTHashZ
         ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
         /// </param>
         /// <param name="paths">Список путей к файлам изображений</param>
-        public void AddTasks(List<string> paths, bool isNeedMedianFilter = false) =>
+        /// <returns>Список задач по генерации хешей</returns>
+        public List<Task<CreateHashTask>> AddTasksAsync(List<string> paths, bool isNeedMedianFilter = false) =>
             //Вызываем внутренний метод
-            mainWork.AddTasks(paths, isNeedMedianFilter);
+            mainWork.AddTasksAsync(paths, isNeedMedianFilter);
 
 
         /// <summary>

@@ -29,29 +29,31 @@ namespace DCTHashZDemo.Content
         /// Обработчик события обновления статусов
         /// </summary>
         /// <param name="waitCount">Количество ожидающих выполнения задач</param>
-        /// <param name="inWorkCount">Количество задач в работе</param>
-        /// <param name="completeCount">Количество завершённых задач</param>
-        /// <param name="count">Общее количество задач</param>
-        private void DCTHash_UpdateCreationStatus(int waitCount,
-            int inWorkCount, int completeCount, int count)
-        {
+        private void DCTHash_UpdateCreationStatus(int waitCount) =>
             //Тут просто вывожу статус загрузки
-            Console.WriteLine($"Wait: {waitCount}; InWork: {inWorkCount}; " +
-                $"Completed: {completeCount}; FullCount: {count};");
-        }
+            Console.WriteLine($"Wait tasks: {waitCount};");
+
+
 
         /// <summary>
-        /// Обработчик события завершения создания хешей
+        /// Метод отображения сгенерированных хешей
         /// </summary>
-        /// <param name="taskList">Список завершённых задач</param>
-        private void DCTHash_CompleteCeneration(List<CreateHashTask> taskList)
+        /// <param name="tasks">Список завершённых задач</param>
+        private void WriteResult(List<Task<CreateHashTask>> tasks)
         {
+            CreateHashTask result;
             //Тут просто вывожу результаты создания хешей
             Console.WriteLine("Hash list creation complete!");
-            foreach (var task in taskList)
-                Console.WriteLine($"\t[Status: {task.Status}] " +
-                    $"[Hash: {task.Hash.GetValueOrDefault(0)}] " +
-                    $"[FileName: {task.FileName}]");
+            //Проходимся по задачам
+            foreach (var task in tasks)
+            {
+                //Получаем результат выполнения задачи
+                result = task.Result;
+                //Выводим его в консоль
+                Console.WriteLine($"\t[Status: {result.Status}] " +
+                    $"[Hash: {result.Hash.GetValueOrDefault(0)}] " +
+                    $"[FileName: {result.FileName}]");
+            }
         }
 
         
@@ -65,8 +67,6 @@ namespace DCTHashZDemo.Content
         {
             //ВЫводим дополнительную инфу в консоль
             Console.WriteLine("First demo example was started.");
-            //Добавляем обработчик события завершения создания хешей
-            DCTHash.CompleteCeneration += DCTHash_CompleteCeneration;
             //Добавляем обработчик события обновления статусов
             DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;
             //Инициализируем класс работы с хешем
@@ -77,10 +77,14 @@ namespace DCTHashZDemo.Content
                 //ВЫводим дополнительную инфу в консоль
                 Console.WriteLine($"Find {paths.Count} files.");
                 Console.WriteLine($"Hash generation started.");
-                //Добавляем задачу сканирования
-                hash.AddTasks(paths, false);
+                //Добавляем задачи генерации хешей
+                List<Task<CreateHashTask>> tasks = hash.AddTasksAsync(paths, false);
                 //Переходим к новой строке
                 Console.WriteLine();
+                //Ждём завершения всех задач
+                Task.WaitAll(tasks.ToArray(), -1);
+                //ВЫводим на экран результат генерации
+                WriteResult(tasks);
 
                 //Запрещаем закрытие программы до 
                 //нажатия кнопки "Enter"

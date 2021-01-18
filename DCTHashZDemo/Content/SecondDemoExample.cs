@@ -28,10 +28,8 @@ namespace DCTHashZDemo.Content
         {
             //Инициализируем используемые классы
             hash = new DCTHash();
-            //Добавляем обработчик события завершения создания хешей
-            DCTHash.CompleteCeneration += DCTHash_CompleteCeneration;
             //Добавляем обработчик события обновления статусов
-            DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;
+            DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;                   
         }
 
 
@@ -39,28 +37,9 @@ namespace DCTHashZDemo.Content
         /// Обработчик события обновления статусов
         /// </summary>
         /// <param name="waitCount">Количество ожидающих выполнения задач</param>
-        /// <param name="inWorkCount">Количество задач в работе</param>
-        /// <param name="completeCount">Количество завершённых задач</param>
-        /// <param name="count">Общее количество задач</param>
-        private void DCTHash_UpdateCreationStatus(int waitCount,
-            int inWorkCount, int completeCount, int count)
-        {
+        private void DCTHash_UpdateCreationStatus(int waitCount) =>
             //Тут просто вывожу статус загрузки
-            Console.WriteLine($"Wait: {waitCount}; InWork: {inWorkCount}; " +
-                $"Completed: {completeCount}; FullCount: {count};");
-        }
-
-        /// <summary>
-        /// Обработчик события завершения создания хешей
-        /// </summary>
-        /// <param name="taskList">Список завершённых задач</param>
-        private void DCTHash_CompleteCeneration(List<CreateHashTask> taskList)
-        {
-            //Тут просто вывожу результаты создания хешей
-            Console.WriteLine("Hash list creation complete!");
-            //Выполняем сравнение полученных хешей
-            EqualResults(taskList);
-        }
+            Console.WriteLine($"Wait tasks: {waitCount};");
 
 
         /// <summary>
@@ -70,6 +49,7 @@ namespace DCTHashZDemo.Content
         private void EqualResults(List<CreateHashTask> taskList)
         {
             ulong taskHash, fileHash;
+            bool eqal;
             //Проходимся по файлам получившим хеши
             foreach(var task in taskList)
             {
@@ -93,11 +73,17 @@ namespace DCTHashZDemo.Content
                             {
                                 //ПОлучаем хеш файла
                                 fileHash = file.Hash.GetValueOrDefault(0);
+                                //Сравниваем хеши
+                                eqal = hash.EqalImageHash(taskHash, fileHash);
+                                //ПРоставляем цвет пор равеноству
+                                Console.ForegroundColor = (eqal) ? ConsoleColor.Green : ConsoleColor.Red;                                
                                 //Выводим инфу о сравнении
                                 Console.WriteLine($"\t [FileName: {file.FileName}] " +
                                     $"[Hash: {file.Hash.GetValueOrDefault(0)}] " +
                                     $"[Similarity: {hash.GetHashSimilarity(taskHash, fileHash)}] " +
-                                    $"[Equality: {hash.EqalImageHash(taskHash, fileHash)}]");
+                                    $"[Equality: {eqal}]");
+                                //Сбрасываем цвет
+                                Console.ForegroundColor = ConsoleColor.White;
                             }
                             //Если у этого файла нет хеша
                             else
@@ -119,16 +105,23 @@ namespace DCTHashZDemo.Content
         {
             //ВЫводим дополнительную инфу в консоль
             Console.WriteLine("Second demo example was started.");
-
+            
             //ПОлучаем список файлов из директории сканирования
             List<string> paths = Directory.GetFiles(scanPath).ToList();
             //ВЫводим дополнительную инфу в консоль
             Console.WriteLine($"Find {paths.Count} files.");
             Console.WriteLine($"Hash generation started.");
-            //Добавляем задачу сканирования
-            hash.AddTasks(paths, false);
+            //Добавляем задачи генерации хешей
+            List<Task<CreateHashTask>> tasks = hash.AddTasksAsync(paths, false);
             //Переходим к новой строке
             Console.WriteLine();
+            //Ждём завершения всех задач
+            Task.WaitAll(tasks.ToArray(), -1);
+            //Получаем список результатов выполнения задач
+            List<CreateHashTask> results = tasks
+                .Select(task => task.Result).ToList();
+            //ВЫполняем сравнение и вывод результатов
+            EqualResults(results);
 
             //Запрещаем закрытие программы до 
             //нажатия кнопки "Enter"

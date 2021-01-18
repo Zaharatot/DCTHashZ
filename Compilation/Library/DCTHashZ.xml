@@ -192,9 +192,6 @@
             Делегат события обновления статусов загрузки
             </summary>
             <param name="waitCount">Количество ожидающих выполнения задач</param>
-            <param name="inWorkCount">Количество задач в работе</param>
-            <param name="completeCount">Количество завершённых задач</param>
-            <param name="count">Общее количество задач</param>
         </member>
         <member name="T:DCTHashZ.Clases.DataClases.Other.Enums">
             <summary>
@@ -516,11 +513,6 @@
             Класс превращения изображения в хеш
             </summary>
         </member>
-        <member name="P:DCTHashZ.Clases.WorkClases.ImageWork.IsWork">
-            <summary>
-            Флаг выполнения работы 
-            </summary>
-        </member>
         <member name="F:DCTHashZ.Clases.WorkClases.ImageWork.loader">
             <summary>
             Класс загрузки изображения
@@ -601,17 +593,12 @@
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.MainWork">
             <summary>
-            Основной рабочий класс приложения
+            Основной рабочий класс
             </summary>
         </member>
         <member name="F:DCTHashZ.Clases.WorkClases.MainWork.taskList">
             <summary>
-            Список задач по генерации хешей
-            </summary>
-        </member>
-        <member name="F:DCTHashZ.Clases.WorkClases.MainWork.workersList">
-            <summary>
-            Список классов генерации хеша
+            Список задач по созданию хешей
             </summary>
         </member>
         <member name="F:DCTHashZ.Clases.WorkClases.MainWork.isWork">
@@ -629,11 +616,6 @@
             Инициализатор класса
             </summary>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.InitWorkers">
-            <summary>
-            Инициализируем список рабочих классов
-            </summary>
-        </member>
         <member name="M:DCTHashZ.Clases.WorkClases.MainWork.Main">
             <summary>
             Основной рабочий класс
@@ -644,56 +626,52 @@
             Обновляем список задач
             </summary>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.SendStatusEvents">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.SendUpdateStatusEvent(System.Int32@)">
             <summary>
-            Вызываем события обновления статуса
+            Метод отправки ивента обновления статуса
             </summary>
-            <returns>True - работа была завершена</returns>
+            <param name="oldCount">Старое количество задач в списке</param>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.SendStatusEvent(System.Int32)">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.RemoveCompletedTasks">
             <summary>
-            Отправляем ивент обновления статуса
-            </summary>
-            <param name="completed">Количество завершённых задач</param>
-        </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.SendCompleteEvent">
-            <summary>
-            Вызываем событие завершения формирования списка хешей
+            Удаляем завершённые задачи
             </summary>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.StartWorkers(System.Collections.Generic.List{DCTHashZ.Clases.WorkClases.ImageWork})">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.GetCountActiveTasks">
             <summary>
-            Создаём новые классы генерации хеша
+            Получаем количество выполняющихся задач
             </summary>
-            <param name="freeWorkers">Список свободных воркеров</param>
+            <returns>Количество задач в работе</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.GetWaitingTasks(System.Int32)">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.StartTasks(System.Int32)">
             <summary>
-            Получчаем список задач, ожидающих выполнения
+            Запускаем задачи на выполнение
             </summary>
-            <param name="slots">КОличество слотов для создания</param>
-            <returns>Список задач для выполнения</returns>
+            <param name="count">Количество задач для выполнения</param>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.GetFreeWorkers">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.CalculateHash(System.String,System.Boolean)">
             <summary>
-            Получем список свободных рабочих классов
+            Формируем хеш файла
             </summary>
-            <returns>Список свободных воркеров</returns>
-        </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.GenerateTasksFromPaths(System.Collections.Generic.List{System.String},System.Boolean)">
-            <summary>
-            Генерируем список задач по списку путей
-            </summary>
-            <param name="paths">Список путей к файлам изображений</param>
+            <param name="path">ПУть к файлу на диске</param>
             <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
-            <returns>Спаисок задач</returns>
+            <returns>Результат генерации хеша</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.AddTasks(System.Collections.Generic.List{System.String},System.Boolean)">
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.CreateCalculateHashTask(System.String,System.Boolean)">
+            <summary>
+            Создаём таску на генерацию хеша
+            </summary>
+            <param name="path">ПУть к файлу на диске</param>
+            <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+            <returns>Задача по генерации хеша</returns>
+        </member>
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.AddTasksAsync(System.Collections.Generic.List{System.String},System.Boolean)">
             <summary>
             Добавляем задачи для генерации хешей
             </summary>
             <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
-            <param name="paths">Список путей к файлам изображений</param>
+            <param name="pathList">Список путей к файлам изображений</param>
+            <returns>Список задач по генерации хешей</returns>
         </member>
         <member name="M:DCTHashZ.Clases.WorkClases.MainWork.Dispose">
             <summary>
@@ -703,11 +681,6 @@
         <member name="T:DCTHashZ.DCTHash">
             <summary>
             Фасадный класс библиотеки
-            </summary>
-        </member>
-        <member name="E:DCTHashZ.DCTHash.CompleteCeneration">
-            <summary>
-            Событие завершения работ по генерации хешей
             </summary>
         </member>
         <member name="E:DCTHashZ.DCTHash.UpdateCreationStatus">
@@ -730,22 +703,13 @@
             Конструктор класса
             </summary>
         </member>
-        <member name="M:DCTHashZ.DCTHash.InvokeCompleteCeneration(System.Collections.Generic.List{DCTHashZ.Clases.DataClases.ImageWork.CreateHashTask})">
-            <summary>
-            Метод вызова события завершения работ по генерации хешей
-            </summary>
-            <param name="taskList">Список завершённых задач</param>
-        </member>
-        <member name="M:DCTHashZ.DCTHash.InvokeUpdateCreationStatus(System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:DCTHashZ.DCTHash.InvokeUpdateCreationStatus(System.Int32)">
             <summary>
             Метод вызова события обновления статусов создания хешей
             </summary>
             <param name="waitCount">Количество ожидающих выполнения задач</param>
-            <param name="inWorkCount">Количество задач в работе</param>
-            <param name="completeCount">Количество завершённых задач</param>
-            <param name="count">Общее количество задач</param>
         </member>
-        <member name="M:DCTHashZ.DCTHash.AddTasks(System.Collections.Generic.List{System.String},System.Boolean)">
+        <member name="M:DCTHashZ.DCTHash.AddTasksAsync(System.Collections.Generic.List{System.String},System.Boolean)">
             <summary>
             Добавляем задачи для генерации хешей
             </summary>
@@ -758,6 +722,7 @@
              Учитывая вышесказанное, я не рекомендую использовать данный флаг.
             </param>
             <param name="paths">Список путей к файлам изображений</param>
+            <returns>Список задач по генерации хешей</returns>
         </member>
         <member name="M:DCTHashZ.DCTHash.GetHashSimilarity(System.UInt64,System.UInt64)">
             <summary>

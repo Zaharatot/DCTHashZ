@@ -21,11 +21,6 @@ namespace DCTHashZ.Clases.WorkClases
     internal class ImageWork
     {
         /// <summary>
-        /// Флаг выполнения работы 
-        /// </summary>
-        public bool IsWork { get; set; }
-
-        /// <summary>
         /// Класс загрузки изображения
         /// </summary>
         private LoadImagePixels loader;
@@ -63,8 +58,6 @@ namespace DCTHashZ.Clases.WorkClases
         /// </summary>
         private void Init()
         {
-            //Проставляем дефолтные значения
-            IsWork = false;
             //Инициализируем используемые классы
             loader = new LoadImagePixels();
             grayScaleTransform = new GrayScaleTransform();
@@ -107,33 +100,25 @@ namespace DCTHashZ.Clases.WorkClases
         /// </summary>
         /// <param name="taskInfo">Информация о выполняемой задаче</param>
         public void CalculateHash(CreateHashTask taskInfo)
-        {
-            
-            //Указываем что работа началась
-            IsWork = true;
-            //Запускаем эту работу в отдельном потоке
-            new Thread(() => { 
-                //Высчитываем ДКП-матрицу из изображения
-                double[,] dctMatrix = CreateDctMatrix(taskInfo);
-                //Если матрица не была получена
-                if (dctMatrix == null)
-                    //Проставляем статус ошибки
-                    taskInfo.Status = CreateHashStatuses.Error;
-                //Если всё ок
-                else
-                {
-                    //Формируем хеш изображения и возвращаем его
-                    taskInfo.Hash = calculateDctHash.CalculateHash(dctMatrix);
-                    //Обновляем статус по наличию хеша
-                    taskInfo.UpdateStatusByHash();
-                }
-                //Принудительно вызываем сборщик мусора
-                //По какой-то причине он не хочет вызываться 
-                //автоматически, по завершению работы с данным методом
-                GC.Collect();
-                //Указываем что работа завершена
-                IsWork = false;
-            }).Start();
+        {            
+            //Высчитываем ДКП-матрицу из изображения
+            double[,] dctMatrix = CreateDctMatrix(taskInfo);
+            //Если матрица не была получена
+            if (dctMatrix == null)
+                //Проставляем статус ошибки
+                taskInfo.Status = CreateHashStatuses.Error;
+            //Если всё ок
+            else
+            {
+                //Формируем хеш изображения и возвращаем его
+                taskInfo.Hash = calculateDctHash.CalculateHash(dctMatrix);
+                //Обновляем статус по наличию хеша
+                taskInfo.UpdateStatusByHash();
+            }
+            //Принудительно вызываем сборщик мусора
+            //По какой-то причине он не хочет вызываться 
+            //автоматически, по завершению работы с данным методом
+            GC.Collect();
         }
 
     }

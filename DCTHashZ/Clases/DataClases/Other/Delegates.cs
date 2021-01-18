@@ -23,10 +23,7 @@ namespace DCTHashZ.Clases.DataClases.Other
         /// Делегат события обновления статусов загрузки
         /// </summary>
         /// <param name="waitCount">Количество ожидающих выполнения задач</param>
-        /// <param name="inWorkCount">Количество задач в работе</param>
-        /// <param name="completeCount">Количество завершённых задач</param>
-        /// <param name="count">Общее количество задач</param>
-        public delegate void UpdateCreationStatusEventHandler(int waitCount, int inWorkCount, int completeCount, int count);
+        public delegate void UpdateCreationStatusEventHandler(int waitCount);
 
     }
 }
