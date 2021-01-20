@@ -1,5 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Other;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -69,9 +70,14 @@ namespace DCTHashZ.Clases.WorkClases.Loader
                 //Если файл изображения существует
                 if (File.Exists(path))
                 {
-                    //Считываем в массив пиксели картинки
-                    using (Bitmap sourceImage = new Bitmap(path))
+                    //Загружаем оригинальнку картинку
+                    Bitmap originalImage = new Bitmap(path);
+                    //Принудительно меняем ей разрешение в 800х600
+                    using (Bitmap sourceImage = new Bitmap(originalImage,
+                        new Size(Constants.LOAD_IMAGE_WIDTH, Constants.LOAD_IMAGE_HEIGHT)))
                     {
+                        //Уничтожаем оригинальное изображение
+                        originalImage.Dispose();
                         //Получаем одномерный массив пикселей изображения
                         pixels = GetImagePixels(sourceImage);
                         //Если пиксели были корректно загружены

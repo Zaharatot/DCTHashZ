@@ -13,6 +13,14 @@ namespace DCTHashZ.Clases.DataClases.Other
     internal class Constants
     {
         /// <summary>
+        /// Принудительная ширина загружаемого изображения
+        /// </summary>
+        public const int LOAD_IMAGE_WIDTH = 600;
+        /// <summary>
+        /// Принудительная высота загружаемого изображения
+        /// </summary>
+        public const int LOAD_IMAGE_HEIGHT = 800;
+        /// <summary>
         /// Ширина и высота изображения (оно будет квадратным), 
         /// после его уменьшения, для последующего 
         /// косинусного преобразования 

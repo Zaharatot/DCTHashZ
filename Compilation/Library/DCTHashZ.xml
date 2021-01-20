@@ -135,6 +135,16 @@
             для выполнения работы данного класса, в виде констант
             </summary>
         </member>
+        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.LOAD_IMAGE_WIDTH">
+            <summary>
+            Принудительная ширина загружаемого изображения
+            </summary>
+        </member>
+        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.LOAD_IMAGE_HEIGHT">
+            <summary>
+            Принудительная высота загружаемого изображения
+            </summary>
+        </member>
         <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.DECREASED_IMAGE_SIZE">
             <summary>
             Ширина и высота изображения (оно будет квадратным), 
