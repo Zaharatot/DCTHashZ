@@ -71,11 +71,12 @@ namespace DCTHashZ.Clases.WorkClases
         /// Формируем ДКП-матрицу изображения
         /// </summary>
         /// <param name="taskInfo">Информация о выполняемой задаче</param>
+        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
         /// <returns>ДКП-матрица изображения</returns>
-        private double[,] CreateDctMatrix(CreateHashTask taskInfo)
+        private double[,] CreateDctMatrix(CreateHashTask taskInfo, ByteImageInfo image = null)
         {
-            //Получаем пиксели изображения
-            ByteImageInfo image = loader.LoadImage(taskInfo.GetFullPath());
+            //Получаем пиксели изображения, если оно не было передано
+            image = image ?? loader.LoadImage(taskInfo.GetFullPath());
             //Конвертируем изображение в режим градаций серого
             grayScaleTransform.ToGrayScale(ref image);
             //Если нужно применить медианный фильтр для сглаживания шумов на изображении
@@ -99,10 +100,11 @@ namespace DCTHashZ.Clases.WorkClases
         /// Рассчитываем хеш для изображения
         /// </summary>
         /// <param name="taskInfo">Информация о выполняемой задаче</param>
-        public void CalculateHash(CreateHashTask taskInfo)
+        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
+        public void CalculateHash(CreateHashTask taskInfo, ByteImageInfo image = null)
         {            
             //Высчитываем ДКП-матрицу из изображения
-            double[,] dctMatrix = CreateDctMatrix(taskInfo);
+            double[,] dctMatrix = CreateDctMatrix(taskInfo, image);
             //Если матрица не была получена
             if (dctMatrix == null)
                 //Проставляем статус ошибки

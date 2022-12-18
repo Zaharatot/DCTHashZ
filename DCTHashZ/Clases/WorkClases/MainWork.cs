@@ -158,6 +158,27 @@ namespace DCTHashZ.Clases.WorkClases
         }
 
         /// <summary>
+        /// Формируем хеш файла
+        /// </summary>
+        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
+        /// <returns>Результат генерации хеша</returns>
+        private CreateHashTask CalculateHash(ByteImageInfo image, bool isNeedMedianFilter)
+        {
+            //Инициализируем информацию о задаче
+            CreateHashTask task = new CreateHashTask() {
+                IsNeedMedianFilter = isNeedMedianFilter
+            };
+            //Инициализируем класс работы с изображением
+            ImageWork imageWork = new ImageWork();
+            //Рассчитываем хеш файла
+            imageWork.CalculateHash(task, image);
+            //Возвращаем результат
+            return task;
+        }
+
+
+        /// <summary>
         /// Создаём таску на генерацию хеша
         /// </summary>
         /// <param name="path">ПУть к файлу на диске</param>
@@ -165,6 +186,15 @@ namespace DCTHashZ.Clases.WorkClases
         /// <returns>Задача по генерации хеша</returns>
         private Task<CreateHashTask> CreateCalculateHashTask(string path, bool isNeedMedianFilter) =>
             new Task<CreateHashTask>(() => CalculateHash(path, isNeedMedianFilter));
+
+        /// <summary>
+        /// Создаём таску на генерацию хеша
+        /// </summary>
+        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
+        /// <returns>Задача по генерации хеша</returns>
+        private Task<CreateHashTask> CreateCalculateHashTask(ByteImageInfo image, bool isNeedMedianFilter) =>
+            new Task<CreateHashTask>(() => CalculateHash(image, isNeedMedianFilter));
 
         /// <summary>
         /// Добавляем задачи для генерации хешей
@@ -185,6 +215,23 @@ namespace DCTHashZ.Clases.WorkClases
             return tasks;
         }
 
+        /// <summary>
+        /// Добавляем задачу для генерации хешей по загруженной картинке
+        /// </summary>
+        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
+        /// <returns>Задача по генерации хешей</returns>
+        public Task<CreateHashTask> AddTaskAsync(ByteImageInfo image, bool isNeedMedianFilter)
+        {
+            //Конвертируем список файлов в список задач по генерации хешей
+            Task<CreateHashTask> task = CreateCalculateHashTask(image, isNeedMedianFilter);
+            //Лочим общий список задач
+            lock (taskList)
+                //Добавляем задачу в список
+                taskList.Add(task);
+            //Возвращаем зщадачу из списка
+            return task;
+        }
 
         /// <summary>
         /// Метод очистки неуправляемых ресмурсов класса

@@ -75,6 +75,28 @@ namespace DCTHashZ
             //Вызываем внутренний метод
             mainWork.AddTasksAsync(paths, isNeedMedianFilter);
 
+        /// <summary>
+        /// Добавляем задачу для генерации хешей по загруженной картинке
+        /// </summary>
+        /// <param name="isNeedMedianFilter">
+        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения. 
+        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при 
+        ///  итоговом сравнении хешей, она существенно уменьшает производительность. 
+        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной 
+        ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
+        ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
+        /// </param>
+        /// <param name="height">Высота изображения</param>
+        /// <param name="width">Ширина изображения</param>
+        /// <param name="pixels">Массив пикселей изображения в формате RGBA</param>
+        /// <returns>Задача по генерации хешей</returns>
+        public Task<CreateHashTask> AddTaskAsync(byte[] pixels, int width, int height, bool isNeedMedianFilter = false) =>
+            //Вызываем внутренний метод
+            mainWork.AddTaskAsync(new ByteImageInfo() { 
+                ImageSize = new Size(width, height),
+                Pixels = pixels
+            }, isNeedMedianFilter);
+
 
         /// <summary>
         /// Получаем схожесть хешей
