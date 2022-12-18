@@ -1,5 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,11 +48,11 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// Получаем цвет нового пикселя
         /// </summary>
         /// <param name="id">Id текущего выбранного пикселя</param>
-        /// <param name="info">Информация об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <param name="blockSize">Размер блока пикселей</param>
         /// <param name="count">Количество пикселей в массиве</param>
         /// <returns>Цвет нового пикселя</returns>
-        private byte GetNewPixelColor(int id, Size blockSize, int count, ByteImageInfo info)
+        private byte GetNewPixelColor(int id, Size blockSize, int count, IImageInfo info)
         {
             //Считываем список пикселей блока
             List<byte> block = GetPixelsBlock(id, blockSize, count, info);
@@ -65,8 +66,8 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// Выполняем медианную фильтрацию
         /// </summary>
         /// <param name="value">Значение фильтрации</param>
-        /// <param name="info">Информация об изображении</param>
-        public void Filter(ref ByteImageInfo info, int value)
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+        public void Filter(ref IImageInfo info, int value)
         {
             byte[] pixels;
             try

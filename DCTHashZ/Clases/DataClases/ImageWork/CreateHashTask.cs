@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static DCTHashZ.Clases.DataClases.Other.Enums;
+using static DCTHashZ.Clases.DataClases.Global.Enums;
 
 namespace DCTHashZ.Clases.DataClases.ImageWork
 {

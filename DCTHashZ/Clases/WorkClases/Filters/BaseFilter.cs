@@ -1,4 +1,5 @@
 ﻿using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -79,12 +80,12 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// <summary>
         /// Получаем блок пикселей изображения
         /// </summary>
-        /// <param name="info">Информация об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <param name="id">Id текущего выбранного пикселя</param>
         /// <param name="blockSize">Размер блока пикселей</param>
         /// <param name="count">Количество пикселей в массиве</param>
         /// <returns>Список пикселей считанных из блока</returns>
-        protected List<byte> GetPixelsBlock(int id, Size blockSize, int count, ByteImageInfo info)
+        protected List<byte> GetPixelsBlock(int id, Size blockSize, int count, IImageInfo info)
         {
             //Инициализируем выходной массив
             List<byte> ex = new List<byte>();

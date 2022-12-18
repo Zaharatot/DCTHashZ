@@ -129,108 +129,123 @@
             Конструктор класса
             </summary>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Constants">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Constants">
             <summary>
             Класс, включающий в себя все глобальные значения 
             для выполнения работы данного класса, в виде констант
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.LOAD_IMAGE_WIDTH">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.LOAD_IMAGE_WIDTH">
             <summary>
             Принудительная ширина загружаемого изображения
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.LOAD_IMAGE_HEIGHT">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.LOAD_IMAGE_HEIGHT">
             <summary>
             Принудительная высота загружаемого изображения
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.DECREASED_IMAGE_SIZE">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.DECREASED_IMAGE_SIZE">
             <summary>
             Ширина и высота изображения (оно будет квадратным), 
             после его уменьшения, для последующего 
             косинусного преобразования 
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.MEDIAN_FILTER_VALUE">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.MEDIAN_FILTER_VALUE">
             <summary>
             Значение для применения медианного фильтра
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.DCT_MATRIX_MAIN_BLOCK_SIZE">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.DCT_MATRIX_MAIN_BLOCK_SIZE">
             <summary>
             Ширина и высота основного блока матрицы, 
             который будет использоваться для рассчёта хеша
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.DCT_HASH_EQUAL_SENSIVITY">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.DCT_HASH_EQUAL_SENSIVITY">
             <summary>
             Чувствительность для сравнения изображений
             Дефолтом считается значение в 21, так что его и поставлю
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.UPDATE_TASK_STATUSES_DELAY">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.UPDATE_TASK_STATUSES_DELAY">
             <summary>
             Время ожидания таймера обновления статусов задач
             Указывается в милисекундах
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.WAIT_TASKS_DELAY">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.WAIT_TASKS_DELAY">
             <summary>
             Время ожидания таймера получения задач
             Указывается в милисекундах
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Constants.SUNCHRONOUS_TASKS_COUNT">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Constants.SUNCHRONOUS_TASKS_COUNT">
             <summary>
             Количество одновременно вычисляемых хешей
             </summary>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Delegates">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Delegates">
             <summary>
             Класс глобальных делегатов событий
             </summary>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Delegates.CompleteCenerationEventHadnler">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Delegates.CompleteCenerationEventHadnler">
             <summary>
             Делегат события завершения генерации хешей
             </summary>
             <param name="taskList">Список завершённых задач</param>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Delegates.UpdateCreationStatusEventHandler">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Delegates.UpdateCreationStatusEventHandler">
             <summary>
             Делегат события обновления статусов загрузки
             </summary>
             <param name="waitCount">Количество ожидающих выполнения задач</param>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Enums">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Enums">
             <summary>
             Класс глобальных перечислений
             </summary>
         </member>
-        <member name="T:DCTHashZ.Clases.DataClases.Other.Enums.CreateHashStatuses">
+        <member name="T:DCTHashZ.Clases.DataClases.Global.Enums.CreateHashStatuses">
             <summary>
             Перевчичление статусов создания хешей
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Enums.CreateHashStatuses.Added">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Enums.CreateHashStatuses.Added">
             <summary>
             Файл добавлен для создания хеша
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Enums.CreateHashStatuses.Creation">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Enums.CreateHashStatuses.Creation">
             <summary>
             Хеш создаётся
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Enums.CreateHashStatuses.Complete">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Enums.CreateHashStatuses.Complete">
             <summary>
             Создание хеша завершено
             </summary>
         </member>
-        <member name="F:DCTHashZ.Clases.DataClases.Other.Enums.CreateHashStatuses.Error">
+        <member name="F:DCTHashZ.Clases.DataClases.Global.Enums.CreateHashStatuses.Error">
             <summary>
             ОШибка генерации хеша
+            </summary>
+        </member>
+        <member name="T:DCTHashZ.Clases.DataClases.Interfaces.IImageInfo">
+            <summary>
+            Интерфейс класса информации об изображении
+            </summary>
+        </member>
+        <member name="P:DCTHashZ.Clases.DataClases.Interfaces.IImageInfo.Pixels">
+            <summary>
+            Пиксели изображения
+            </summary>
+        </member>
+        <member name="P:DCTHashZ.Clases.DataClases.Interfaces.IImageInfo.ImageSize">
+            <summary>
+            Размер изображения
             </summary>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.Filters.BaseFilter">
@@ -264,11 +279,11 @@
             <param name="count">Количество пикселей в массиве</param>
             <returns>Id последнего пикселя блока</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.BaseFilter.GetPixelsBlock(System.Int32,System.Drawing.Size,System.Int32,DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.BaseFilter.GetPixelsBlock(System.Int32,System.Drawing.Size,System.Int32,DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Получаем блок пикселей изображения
             </summary>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <param name="id">Id текущего выбранного пикселя</param>
             <param name="blockSize">Размер блока пикселей</param>
             <param name="count">Количество пикселей в массиве</param>
@@ -330,18 +345,18 @@
             <param name="size">Высота и ширина сжатого изображения</param>
             <returns>Матрица произведения</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DctFilter.CastToDouble(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DctFilter.CastToDouble(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Конвертируем массив пикселей типа byte, в матрицу с типом double
             </summary>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <returns>Массиф типа double</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DctFilter.CalculateDCTValuesTable(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DctFilter.CalculateDCTValuesTable(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Высчитываем таблицу значений ДКП
             </summary>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <returns>Массив вычисленных значений</returns>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.Filters.DecreaseImage">
@@ -362,13 +377,13 @@
             <param name="oldImageSize">Размеры старого изображения</param>
             <returns>Размер одного блока</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DecreaseImage.GetPixelColor(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo,System.Int32,System.Drawing.Size,System.Int32)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DecreaseImage.GetPixelColor(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo,System.Int32,System.Drawing.Size,System.Int32)">
             <summary>
             Получаем цвет пикселя
             </summary>
             <param name="id">Id текущего выбранного пикселя</param>
             <param name="decreaseBlockSize">Размер блока, который мы ужимаем в один пиксель</param>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <param name="count">Количество пикселей в массиве</param>
             <returns>Цвет усреднённого пикселя</returns>
         </member>
@@ -380,12 +395,12 @@
             <param name="imageWidth">Ширина изображения</param>
             <returns>Стартовая позиция блока</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DecreaseImage.SupersamplingDecrease(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo@,System.Drawing.Size)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.DecreaseImage.SupersamplingDecrease(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo@,System.Drawing.Size)">
             <summary>
             Уменьшаем изображение методом суперсемплинга
             </summary>
             <param name="newImageSize">Размер нового изображения</param>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.Filters.GrayScaleTransform">
             <summary>
@@ -407,11 +422,11 @@
             <param name="blue">Значение синего канала</param>
             <returns>Яркость пикселя в градациях серого</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.GrayScaleTransform.ToGrayScale(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo@)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.GrayScaleTransform.ToGrayScale(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo@)">
             <summary>
             Переводим картинку в режим градаций серого
             </summary>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.Filters.MedianFilter">
             <summary>
@@ -430,22 +445,22 @@
             <param name="sortedBlock">Отсортироованный список пикселей</param>
             <returns>Центральное значение цвета</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.MedianFilter.GetNewPixelColor(System.Int32,System.Drawing.Size,System.Int32,DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.MedianFilter.GetNewPixelColor(System.Int32,System.Drawing.Size,System.Int32,DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Получаем цвет нового пикселя
             </summary>
             <param name="id">Id текущего выбранного пикселя</param>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <param name="blockSize">Размер блока пикселей</param>
             <param name="count">Количество пикселей в массиве</param>
             <returns>Цвет нового пикселя</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.Filters.MedianFilter.Filter(DCTHashZ.Clases.DataClases.ImageWork.ByteImageInfo@,System.Int32)">
+        <member name="M:DCTHashZ.Clases.WorkClases.Filters.MedianFilter.Filter(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo@,System.Int32)">
             <summary>
             Выполняем медианную фильтрацию
             </summary>
             <param name="value">Значение фильтрации</param>
-            <param name="info">Информация об изображении</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.HashWork.CalculateDctHash">
             <summary>
@@ -563,18 +578,20 @@
             Инициализатор класса
             </summary>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.ImageWork.CreateDctMatrix(DCTHashZ.Clases.DataClases.ImageWork.CreateHashTask)">
+        <member name="M:DCTHashZ.Clases.WorkClases.ImageWork.CreateDctMatrix(DCTHashZ.Clases.DataClases.ImageWork.CreateHashTask,DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Формируем ДКП-матрицу изображения
             </summary>
             <param name="taskInfo">Информация о выполняемой задаче</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <returns>ДКП-матрица изображения</returns>
         </member>
-        <member name="M:DCTHashZ.Clases.WorkClases.ImageWork.CalculateHash(DCTHashZ.Clases.DataClases.ImageWork.CreateHashTask)">
+        <member name="M:DCTHashZ.Clases.WorkClases.ImageWork.CalculateHash(DCTHashZ.Clases.DataClases.ImageWork.CreateHashTask,DCTHashZ.Clases.DataClases.Interfaces.IImageInfo)">
             <summary>
             Рассчитываем хеш для изображения
             </summary>
             <param name="taskInfo">Информация о выполняемой задаче</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         </member>
         <member name="T:DCTHashZ.Clases.WorkClases.Loader.LoadImagePixels">
             <summary>
@@ -667,12 +684,28 @@
             <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
             <returns>Результат генерации хеша</returns>
         </member>
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.CalculateHash(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo,System.Boolean)">
+            <summary>
+            Формируем хеш файла
+            </summary>
+            <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+            <returns>Результат генерации хеша</returns>
+        </member>
         <member name="M:DCTHashZ.Clases.WorkClases.MainWork.CreateCalculateHashTask(System.String,System.Boolean)">
             <summary>
             Создаём таску на генерацию хеша
             </summary>
             <param name="path">ПУть к файлу на диске</param>
             <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+            <returns>Задача по генерации хеша</returns>
+        </member>
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.CreateCalculateHashTask(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo,System.Boolean)">
+            <summary>
+            Создаём таску на генерацию хеша
+            </summary>
+            <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
             <returns>Задача по генерации хеша</returns>
         </member>
         <member name="M:DCTHashZ.Clases.WorkClases.MainWork.AddTasksAsync(System.Collections.Generic.List{System.String},System.Boolean)">
@@ -682,6 +715,14 @@
             <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
             <param name="pathList">Список путей к файлам изображений</param>
             <returns>Список задач по генерации хешей</returns>
+        </member>
+        <member name="M:DCTHashZ.Clases.WorkClases.MainWork.AddTaskAsync(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo,System.Boolean)">
+            <summary>
+            Добавляем задачу для генерации хешей по загруженной картинке
+            </summary>
+            <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+            <returns>Задача по генерации хешей</returns>
         </member>
         <member name="M:DCTHashZ.Clases.WorkClases.MainWork.Dispose">
             <summary>
@@ -733,6 +774,21 @@
             </param>
             <param name="paths">Список путей к файлам изображений</param>
             <returns>Список задач по генерации хешей</returns>
+        </member>
+        <member name="M:DCTHashZ.DCTHash.AddTaskAsync(DCTHashZ.Clases.DataClases.Interfaces.IImageInfo,System.Boolean)">
+            <summary>
+            Добавляем задачу для генерации хешей по загруженной картинке
+            </summary>
+            <param name="isNeedMedianFilter">
+             Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения. 
+             ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при 
+             итоговом сравнении хешей, она существенно уменьшает производительность. 
+             Для сравнения, построение хеша для изображения 600х600px, без медианной 
+             фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
+             Учитывая вышесказанное, я не рекомендую использовать данный флаг.
+            </param>
+            <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+            <returns>Задача по генерации хешей</returns>
         </member>
         <member name="M:DCTHashZ.DCTHash.GetHashSimilarity(System.UInt64,System.UInt64)">
             <summary>

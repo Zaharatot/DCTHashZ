@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DCTHashZ.Clases.DataClases.Other
+namespace DCTHashZ.Clases.DataClases.Global
 {
     /// <summary>
     /// Класс глобальных перечислений

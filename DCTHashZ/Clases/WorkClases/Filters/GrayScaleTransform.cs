@@ -1,5 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -38,8 +39,8 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// <summary>
         /// Переводим картинку в режим градаций серого
         /// </summary>
-        /// <param name="info">Информация об изображении</param>
-        public void ToGrayScale(ref ByteImageInfo info)
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+        public void ToGrayScale(ref IImageInfo info)
         {
             byte[] pixels;
             try

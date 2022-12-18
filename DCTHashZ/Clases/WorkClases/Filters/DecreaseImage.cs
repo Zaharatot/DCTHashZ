@@ -1,5 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,10 +48,10 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// </summary>
         /// <param name="id">Id текущего выбранного пикселя</param>
         /// <param name="decreaseBlockSize">Размер блока, который мы ужимаем в один пиксель</param>
-        /// <param name="info">Информация об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <param name="count">Количество пикселей в массиве</param>
         /// <returns>Цвет усреднённого пикселя</returns>
-        private byte GetPixelColor(ByteImageInfo info, int count, Size decreaseBlockSize, int id)
+        private byte GetPixelColor(IImageInfo info, int count, Size decreaseBlockSize, int id)
         {
             //Считываем список пикселей блока
             List<byte> block = GetPixelsBlock(id, decreaseBlockSize, count, info);
@@ -77,8 +78,8 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// Уменьшаем изображение методом суперсемплинга
         /// </summary>
         /// <param name="newImageSize">Размер нового изображения</param>
-        /// <param name="info">Информация об изображении</param>
-        public void SupersamplingDecrease(ref ByteImageInfo info, Size newImageSize)
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+        public void SupersamplingDecrease(ref IImageInfo info, Size newImageSize)
         {
             byte[] pixels;
             try

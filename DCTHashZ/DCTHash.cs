@@ -1,6 +1,7 @@
 ﻿using DCTHashZ.Clases.DataClases;
+using DCTHashZ.Clases.DataClases.Global;
 using DCTHashZ.Clases.DataClases.ImageWork;
-using DCTHashZ.Clases.DataClases.Other;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using DCTHashZ.Clases.WorkClases;
 using DCTHashZ.Clases.WorkClases.Filters;
 using DCTHashZ.Clases.WorkClases.HashWork;
@@ -13,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static DCTHashZ.Clases.DataClases.Other.Delegates;
+using static DCTHashZ.Clases.DataClases.Global.Delegates;
 
 namespace DCTHashZ
 {
@@ -86,16 +87,11 @@ namespace DCTHashZ
         ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
         ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
         /// </param>
-        /// <param name="height">Высота изображения</param>
-        /// <param name="width">Ширина изображения</param>
-        /// <param name="pixels">Массив пикселей изображения в формате RGBA</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <returns>Задача по генерации хешей</returns>
-        public Task<CreateHashTask> AddTaskAsync(byte[] pixels, int width, int height, bool isNeedMedianFilter = false) =>
+        public Task<CreateHashTask> AddTaskAsync(IImageInfo info, bool isNeedMedianFilter = false) =>
             //Вызываем внутренний метод
-            mainWork.AddTaskAsync(new ByteImageInfo() { 
-                ImageSize = new Size(width, height),
-                Pixels = pixels
-            }, isNeedMedianFilter);
+            mainWork.AddTaskAsync(info, isNeedMedianFilter);
 
 
         /// <summary>

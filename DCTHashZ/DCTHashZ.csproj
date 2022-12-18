@@ -44,11 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clases\DataClases\ImageWork\ByteImageInfo.cs" />
-    <Compile Include="Clases\DataClases\Other\Constants.cs" />
+    <Compile Include="Clases\DataClases\Global\Constants.cs" />
     <Compile Include="Clases\DataClases\ImageWork\CreateHashTask.cs" />
-    <Compile Include="Clases\DataClases\Other\Delegates.cs" />
-    <Compile Include="Clases\DataClases\Other\Enums.cs" />
+    <Compile Include="Clases\DataClases\Global\Delegates.cs" />
+    <Compile Include="Clases\DataClases\Global\Enums.cs" />
     <Compile Include="Clases\DataClases\ImageWork\ImagePixel.cs" />
+    <Compile Include="Clases\DataClases\Interfaces\IImageInfo.cs" />
     <Compile Include="Clases\WorkClases\Filters\BaseFilter.cs" />
     <Compile Include="Clases\WorkClases\Filters\DctFilter.cs" />
     <Compile Include="Clases\WorkClases\Filters\DecreaseImage.cs" />

@@ -1,6 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
+using DCTHashZ.Clases.DataClases.Global;
 using DCTHashZ.Clases.DataClases.ImageWork;
-using DCTHashZ.Clases.DataClases.Other;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -1,6 +1,7 @@
 ﻿using DCTHashZ.Clases.DataClases;
+using DCTHashZ.Clases.DataClases.Global;
 using DCTHashZ.Clases.DataClases.ImageWork;
-using DCTHashZ.Clases.DataClases.Other;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using DCTHashZ.Clases.WorkClases.Filters;
 using DCTHashZ.Clases.WorkClases.HashWork;
 using DCTHashZ.Clases.WorkClases.Loader;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static DCTHashZ.Clases.DataClases.Other.Enums;
+using static DCTHashZ.Clases.DataClases.Global.Enums;
 
 namespace DCTHashZ.Clases.WorkClases
 {
@@ -71,27 +72,27 @@ namespace DCTHashZ.Clases.WorkClases
         /// Формируем ДКП-матрицу изображения
         /// </summary>
         /// <param name="taskInfo">Информация о выполняемой задаче</param>
-        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <returns>ДКП-матрица изображения</returns>
-        private double[,] CreateDctMatrix(CreateHashTask taskInfo, ByteImageInfo image = null)
+        private double[,] CreateDctMatrix(CreateHashTask taskInfo, IImageInfo info = null)
         {
             //Получаем пиксели изображения, если оно не было передано
-            image = image ?? loader.LoadImage(taskInfo.GetFullPath());
+            info = info ?? loader.LoadImage(taskInfo.GetFullPath());
             //Конвертируем изображение в режим градаций серого
-            grayScaleTransform.ToGrayScale(ref image);
+            grayScaleTransform.ToGrayScale(ref info);
             //Если нужно применить медианный фильтр для сглаживания шумов на изображении
             if (taskInfo.IsNeedMedianFilter)
                 //Применяем медианный филЬтр, для уменьшения уровня шума
-                medianFilter.Filter(ref image, Constants.MEDIAN_FILTER_VALUE);
+                medianFilter.Filter(ref info, Constants.MEDIAN_FILTER_VALUE);
             //Уменьшаем изображение до уровня 32х32
             decreaseImage.SupersamplingDecrease(
-                ref image,
+                ref info,
                 new Size(
                     Constants.DECREASED_IMAGE_SIZE,
                     Constants.DECREASED_IMAGE_SIZE
                 ));
             //Высчитываем ДКП-матрицу из пикселей изображения
-            return dctFilter.CalculateDCTValuesTable(image);
+            return dctFilter.CalculateDCTValuesTable(info);
         }
 
 
@@ -100,11 +101,11 @@ namespace DCTHashZ.Clases.WorkClases
         /// Рассчитываем хеш для изображения
         /// </summary>
         /// <param name="taskInfo">Информация о выполняемой задаче</param>
-        /// <param name="image">Ссылка на загруженную информацию об изображении</param>
-        public void CalculateHash(CreateHashTask taskInfo, ByteImageInfo image = null)
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
+        public void CalculateHash(CreateHashTask taskInfo, IImageInfo info = null)
         {            
             //Высчитываем ДКП-матрицу из изображения
-            double[,] dctMatrix = CreateDctMatrix(taskInfo, image);
+            double[,] dctMatrix = CreateDctMatrix(taskInfo, info);
             //Если матрица не была получена
             if (dctMatrix == null)
                 //Проставляем статус ошибки

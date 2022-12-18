@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DCTHashZ.Clases.DataClases.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace DCTHashZ.Clases.DataClases.ImageWork
     /// <summary>
     /// Класс, хранящий данные об изображении
     /// </summary>
-    class ByteImageInfo
+    internal class ByteImageInfo : IImageInfo
     {
         /// <summary>
         /// Пиксели изображения

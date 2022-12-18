@@ -1,5 +1,6 @@
 ﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.ImageWork;
+using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,9 +126,9 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// <summary>
         /// Конвертируем массив пикселей типа byte, в матрицу с типом double
         /// </summary>
-        /// <param name="info">Информация об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <returns>Массиф типа double</returns>
-        private double[,] CastToDouble(ByteImageInfo info)
+        private double[,] CastToDouble(IImageInfo info)
         {
             //Инициализируем выходной массив
             double[,] ex = new double[info.ImageSize.Width, info.ImageSize.Height];
@@ -140,14 +141,14 @@ namespace DCTHashZ.Clases.WorkClases.Filters
                     ex[i, j] = info.Pixels[id++];            
             return ex;
         }
-        
+
 
         /// <summary>
         /// Высчитываем таблицу значений ДКП
         /// </summary>
-        /// <param name="info">Информация об изображении</param>
+        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <returns>Массив вычисленных значений</returns>
-        public double[,] CalculateDCTValuesTable(ByteImageInfo info)
+        public double[,] CalculateDCTValuesTable(IImageInfo info)
         {
             double[,] ex = null;
             //Если пиксели получены
