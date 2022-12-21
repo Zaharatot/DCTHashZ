@@ -31,17 +31,16 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// <returns>Центральное значение цвета</returns>
         private byte GetCenterValue(List<byte> sortedBlock)
         {
-            byte ex = 0;
+            //Получаем позицию центра блока
             int id = sortedBlock.Count / 2;
             //Если число пикселей чётное
             if (sortedBlock.Count % 2 == 0)
                 //ПОлучаем среднее значение от двух центральных пикселов
-                ex = (byte)((sortedBlock[id] + sortedBlock[id - 1]) / 2);
+                return (byte)((sortedBlock[id] + sortedBlock[id - 1]) / 2);
             //Если число пикселей не чётное
             else
-                //ПОлучаем значение центрального пикселя
-                ex = sortedBlock[id];
-            return ex;
+                //Получаем значение центрального пикселя
+                return sortedBlock[id];
         }
 
         /// <summary>
@@ -67,7 +66,7 @@ namespace DCTHashZ.Clases.WorkClases.Filters
         /// </summary>
         /// <param name="value">Значение фильтрации</param>
         /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
-        public void Filter(ref IImageInfo info, int value)
+        public void Filter(IImageInfo info, int value)
         {
             byte[] pixels;
             try
@@ -79,18 +78,12 @@ namespace DCTHashZ.Clases.WorkClases.Filters
                     pixels = new byte[info.Pixels.Length];
                     //Получаем размеры блка, который будет использоваться для фильтрации
                     Size blockSize = new Size(value, value);
-
-                    DateTime dt = DateTime.Now;
-
                     //Проходимся по пикселям массива
-                    for (int i = 0; i < info.Pixels.Length; i++)
+                    Parallel.For(0, info.Pixels.Length, i => {
                         //Проставляем обновлённые пиксели
                         pixels[i] = GetNewPixelColor(i, blockSize,
                             info.Pixels.Length, info);
-
-                    DateTime dt1 = DateTime.Now;
-
-                    double result = (dt1 - dt).TotalSeconds;
+                    });
                     //Проставляем новый массив пикселей
                     info.Pixels = pixels;
                 }

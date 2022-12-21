@@ -78,12 +78,14 @@ namespace DCTHashZ.Clases.WorkClases
         {
             //Получаем пиксели изображения, если оно не было передано
             info = info ?? loader.LoadImage(taskInfo.GetFullPath());
-            //Конвертируем изображение в режим градаций серого
-            grayScaleTransform.ToGrayScale(ref info);
+            //Если изображение уже не сконвертировано в градации серого
+            if(!info.IsGrayScale)
+                //Конвертируем изображение в режим градаций серого
+                grayScaleTransform.ToGrayScale(ref info);
             //Если нужно применить медианный фильтр для сглаживания шумов на изображении
             if (taskInfo.IsNeedMedianFilter)
                 //Применяем медианный филЬтр, для уменьшения уровня шума
-                medianFilter.Filter(ref info, Constants.MEDIAN_FILTER_VALUE);
+                medianFilter.Filter(info, Constants.MEDIAN_FILTER_VALUE);
             //Уменьшаем изображение до уровня 32х32
             decreaseImage.SupersamplingDecrease(
                 ref info,

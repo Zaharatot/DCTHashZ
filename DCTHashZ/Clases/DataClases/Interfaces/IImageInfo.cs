@@ -20,5 +20,9 @@ namespace DCTHashZ.Clases.DataClases.Interfaces
         /// Размер изображения
         /// </summary>
         Size ImageSize { get; set; }
+        /// <summary>
+        /// Флаг изображеняи в градациях серого
+        /// </summary>
+        bool IsGrayScale { get; set; }
     }
 }

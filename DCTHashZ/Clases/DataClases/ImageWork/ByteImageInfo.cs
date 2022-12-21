@@ -21,6 +21,10 @@ namespace DCTHashZ.Clases.DataClases.ImageWork
         /// Размер изображения
         /// </summary>
         public Size ImageSize { get; set; }
+        /// <summary>
+        /// Флаг изображеняи в градациях серого
+        /// </summary>
+        public bool IsGrayScale { get; set; }
 
         /// <summary>
         /// Конструктор класса
@@ -30,6 +34,7 @@ namespace DCTHashZ.Clases.DataClases.ImageWork
             //Проставляем дефолтные значения
             Pixels = null;
             ImageSize = new Size();
+            IsGrayScale = false;
         }
 
     }
