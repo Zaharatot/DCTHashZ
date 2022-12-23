@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static DCTHashZ.Clases.DataClases.Global.Enums;
 
-namespace DCTHashZDemo.Content
+namespace DCTHashZDemo.Content.WorkClases.Examples
 {
     /// <summary>
     /// Класс реализующий выполнение второго демо примера

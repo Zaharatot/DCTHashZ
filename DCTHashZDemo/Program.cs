@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DCTHashZDemo.Content.WorkClases.Examples;
 
 namespace DCTHashZDemo
 {
@@ -35,6 +36,12 @@ namespace DCTHashZDemo
                     {
                         //Вызываем работу второго примера
                         new SecondDemoExample().Start(scanPath);
+                        break;
+                    }
+                case 3:
+                    {
+                        //Вызываем работу третьего примера
+                        new ThridDemoExample().Start(scanPath);
                         break;
                     }
             }
@@ -66,7 +73,8 @@ namespace DCTHashZDemo
             Console.WriteLine("Select Demo type:");
             Console.WriteLine("\t1. Hash visualize");
             Console.WriteLine("\t2. Check equality");
-            Console.Write("Enter type number (1/2): ");
+            Console.WriteLine("\t3. Calcaulte hash from preloaded image");
+            Console.Write("Enter type number (1-3): ");
             //Считываем введённые данные
             string result = Console.ReadLine();
             //Парсим результат, и в случае ошибки выбираем дефолтный режим

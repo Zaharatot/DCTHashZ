@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,8 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\SecondDemoExample.cs" />
-    <Compile Include="Content\FirstDemoExample.cs" />
+    <Compile Include="Content\DataClases\ByteImageInfo.cs" />
+    <Compile Include="Content\WorkClases\Examples\ThridDemoExample.cs" />
+    <Compile Include="Content\WorkClases\Load\GrayScaleTransform.cs" />
+    <Compile Include="Content\WorkClases\Load\LoadImagePixels.cs" />
+    <Compile Include="Content\WorkClases\Examples\SecondDemoExample.cs" />
+    <Compile Include="Content\WorkClases\Examples\FirstDemoExample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

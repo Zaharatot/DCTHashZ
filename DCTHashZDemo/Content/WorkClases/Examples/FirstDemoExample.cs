@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DCTHashZDemo.Content
+namespace DCTHashZDemo.Content.WorkClases.Examples
 {
     /// <summary>
     /// Класс реализующий выполнение первого демо примера
