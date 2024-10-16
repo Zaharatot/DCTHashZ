@@ -12,13 +12,6 @@ namespace DCTHashZ.Clases.DataClases.Global
     /// </summary>
     public class Delegates
     {
-
-        /// <summary>
-        /// Делегат события завершения генерации хешей
-        /// </summary>
-        /// <param name="taskList">Список завершённых задач</param>
-        public delegate void CompleteCenerationEventHadnler(List<CreateHashTask> taskList);
-
         /// <summary>
         /// Делегат события обновления статусов загрузки
         /// </summary>

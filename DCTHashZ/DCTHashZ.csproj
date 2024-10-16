@@ -60,6 +60,7 @@
     <Compile Include="Clases\WorkClases\ImageWork.cs" />
     <Compile Include="Clases\WorkClases\Loader\LoadImagePixels.cs" />
     <Compile Include="Clases\WorkClases\MainWork.cs" />
+    <Compile Include="DCTHashSync.cs" />
     <Compile Include="DCTHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
