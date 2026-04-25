@@ -1,13 +1,13 @@
-﻿using DCTHashZ.Clases.DataClases.Global;
+using DCTHashZ.Clases.DataClases.Global;
 using DCTHashZ.Clases.DataClases.ImageWork;
 using DCTHashZ.Clases.DataClases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static DCTHashZ.Clases.DataClases.Global.Enums;
 
 namespace DCTHashZ.Clases.WorkClases
 {
@@ -17,13 +17,17 @@ namespace DCTHashZ.Clases.WorkClases
     internal class MainWork : IDisposable
     {
         /// <summary>
-        /// Список задач по созданию хешей
+        /// Ограничитель параллельного вычисления хешей
         /// </summary>
-        List<Task<CreateHashTask>> taskList;
+        private readonly SemaphoreSlim executionLimiter;
         /// <summary>
-        /// Флаг выполнения работы классом
+        /// Количество задач в очереди и работе
         /// </summary>
-        private bool isWork;
+        private int pendingTasksCount;
+        /// <summary>
+        /// Флаг очистки ресурсов
+        /// </summary>
+        private bool isDisposed;
 
 
         /// <summary>
@@ -31,108 +35,10 @@ namespace DCTHashZ.Clases.WorkClases
         /// </summary>
         public MainWork()
         {
-            Init();
+            executionLimiter = new SemaphoreSlim(
+                Constants.SUNCHRONOUS_TASKS_COUNT,
+                Constants.SUNCHRONOUS_TASKS_COUNT);
         }
-
-        /// <summary>
-        /// Инициализатор класса
-        /// </summary>
-        private void Init()
-        {
-            //Инициализируем дефолтные значения
-            taskList = new List<Task<CreateHashTask>>();
-            isWork = true;
-            //Запускаем основной рабочий поток
-            new Thread(Main).Start();
-        }
-
-        /// <summary>
-        /// Основной рабочий класс
-        /// </summary>
-        private void Main()
-        {
-            int oldCount = 0;
-            do
-            {
-                //Если есть задачи
-                if (taskList.Count > 0)
-                {
-                    //Обновляем работу с ними                    
-                    UpdateTasks();
-                    //Спим указанное время
-                    Thread.Sleep(Constants.UPDATE_TASK_STATUSES_DELAY);
-                }
-                //Если задач нет
-                else
-                    //Спим подольше
-                    Thread.Sleep(Constants.WAIT_TASKS_DELAY);
-                //Метод отправки ивента обновления статуса
-                SendUpdateStatusEvent(ref oldCount);
-                //Цикл идёт пока работает программа
-            } while (isWork);
-        }
-
-        /// <summary>
-        /// Обновляем список задач
-        /// </summary>
-        private void UpdateTasks()
-        {
-            //Удаляем завершённые задачи
-            RemoveCompletedTasks();
-            //Получаем количество выполняющихся задач
-            int count = GetCountActiveTasks();
-            //Получаем количество слотов под параллельно выполняющиеся задачи
-            count = Constants.SUNCHRONOUS_TASKS_COUNT - count;
-            //Если слоты есть
-            if (count > 0)
-                //Запускаем задачи
-                StartTasks(count);
-        }
-
-        /// <summary>
-        /// Метод отправки ивента обновления статуса
-        /// </summary>
-        /// <param name="oldCount">Старое количество задач в списке</param>
-        private void SendUpdateStatusEvent(ref int oldCount)
-        {
-            //Если количество задач в списке изменилось
-            if(taskList.Count != oldCount)
-            {
-                //Обновляем старое количество задач
-                oldCount = taskList.Count;
-                //Вызываем ивент обновления работы
-                DCTHash.InvokeUpdateCreationStatus(taskList.Count);
-            }
-        }
-
-        /// <summary>
-        /// Удаляем завершённые задачи
-        /// </summary>
-        private void RemoveCompletedTasks() =>
-            taskList.RemoveAll(task => task.Status == TaskStatus.RanToCompletion);
-
-        /// <summary>
-        /// Получаем количество выполняющихся задач
-        /// </summary>
-        /// <returns>Количество задач в работе</returns>
-        private int GetCountActiveTasks() =>
-            taskList.Count(task => task.Status == TaskStatus.Running);
-
-        /// <summary>
-        /// Запускаем задачи на выполнение
-        /// </summary>
-        /// <param name="count">Количество задач для выполнения</param>
-        private void StartTasks(int count) =>
-            //Получаем из списка задач
-            taskList
-                //Задачи ждущие выполнения
-                .Where(task => task.Status == TaskStatus.Created)
-                //Берём из них первые, по количеству слотов
-                .Take(count)
-                //В виде списка
-                .ToList()
-                //И запускаем их
-                .ForEach(task => task.Start());
 
         /// <summary>
         /// Формируем хеш файла
@@ -140,15 +46,17 @@ namespace DCTHashZ.Clases.WorkClases
         /// <param name="path">ПУть к файлу на диске</param>
         /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
         /// <returns>Результат генерации хеша</returns>
-        private CreateHashTask CalculateHash(string path, bool isNeedMedianFilter)
+        private static CreateHashTask CalculateHash(string path, bool isNeedMedianFilter)
         {
             //ПОлучаем информацию о файле
             FileInfo fi = new FileInfo(path);
             //Инициализируем информацию о задаче
-            CreateHashTask task = new CreateHashTask() {
+            CreateHashTask task = new CreateHashTask()
+            {
                 FileName = fi.Name,
                 Path = fi.DirectoryName,
-                IsNeedMedianFilter = isNeedMedianFilter
+                IsNeedMedianFilter = isNeedMedianFilter,
+                Status = CreateHashStatuses.Creation
             };
             //Инициализируем класс работы с изображением
             ImageWork imageWork = new ImageWork();
@@ -164,11 +72,13 @@ namespace DCTHashZ.Clases.WorkClases
         /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
         /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
         /// <returns>Результат генерации хеша</returns>
-        private CreateHashTask CalculateHash(IImageInfo info, bool isNeedMedianFilter)
+        private static CreateHashTask CalculateHash(IImageInfo info, bool isNeedMedianFilter)
         {
             //Инициализируем информацию о задаче
-            CreateHashTask task = new CreateHashTask() {
-                IsNeedMedianFilter = isNeedMedianFilter
+            CreateHashTask task = new CreateHashTask()
+            {
+                IsNeedMedianFilter = isNeedMedianFilter,
+                Status = CreateHashStatuses.Creation
             };
             //Инициализируем класс работы с изображением
             ImageWork imageWork = new ImageWork();
@@ -178,60 +88,77 @@ namespace DCTHashZ.Clases.WorkClases
             return task;
         }
 
-
         /// <summary>
-        /// Создаём таску на генерацию хеша
+        /// Выполняем расчёт хеша с ограничением параллелизма
         /// </summary>
-        /// <param name="path">ПУть к файлу на диске</param>
-        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
-        /// <returns>Задача по генерации хеша</returns>
-        private Task<CreateHashTask> CreateCalculateHashTask(string path, bool isNeedMedianFilter) =>
-            new Task<CreateHashTask>(() => CalculateHash(path, isNeedMedianFilter));
-
-        /// <summary>
-        /// Создаём таску на генерацию хеша
-        /// </summary>
-        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
-        /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
-        /// <returns>Задача по генерации хеша</returns>
-        private Task<CreateHashTask> CreateCalculateHashTask(IImageInfo info, bool isNeedMedianFilter) =>
-            new Task<CreateHashTask>(() => CalculateHash(info, isNeedMedianFilter));
-
-        /// <summary>
-        /// Добавляем задачи для генерации хешей
-        /// </summary>
-        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
-        /// <param name="pathList">Список путей к файлам изображений</param>
-        /// <returns>Список задач по генерации хешей</returns>
-        public List<Task<CreateHashTask>> AddTasksAsync(List<string> pathList, bool isNeedMedianFilter)
+        /// <param name="hashCalculator">Делегат вычисления хеша</param>
+        /// <returns>Результат генерации хеша</returns>
+        private async Task<CreateHashTask> RunCalculationAsync(Func<CreateHashTask> hashCalculator)
         {
-            //Конвертируем список файлов в список задач по генерации хешей
-            List<Task<CreateHashTask>> tasks = pathList
-                .ConvertAll(file => CreateCalculateHashTask(file, isNeedMedianFilter));
-            //Лочим общий список задач
-            lock (taskList)
-                //Добавляем задачу в список
-                taskList.AddRange(tasks);
-            //Возвращаем зщадачу из списка
-            return tasks;
+            ThrowIfDisposed();
+            UpdatePendingTasksCount(1);
+            await executionLimiter.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                return await Task.Run(hashCalculator).ConfigureAwait(false);
+            }
+            finally
+            {
+                executionLimiter.Release();
+                UpdatePendingTasksCount(-1);
+            }
         }
 
         /// <summary>
-        /// Добавляем задачу для генерации хешей по загруженной картинке
+        /// Формируем хеш файла
         /// </summary>
+        /// <param name="path">ПУть к файлу на диске</param>
         /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <returns>Результат генерации хеша</returns>
+        public Task<CreateHashTask> CalculateHashAsync(string path, bool isNeedMedianFilter) =>
+            RunCalculationAsync(() => CalculateHash(path, isNeedMedianFilter));
+
+        /// <summary>
+        /// Формируем хеш изображения
+        /// </summary>
         /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
-        /// <returns>Задача по генерации хешей</returns>
-        public Task<CreateHashTask> AddTaskAsync(IImageInfo info, bool isNeedMedianFilter)
+        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <returns>Результат генерации хеша</returns>
+        public Task<CreateHashTask> CalculateHashAsync(IImageInfo info, bool isNeedMedianFilter) =>
+            RunCalculationAsync(() => CalculateHash(info, isNeedMedianFilter));
+
+        /// <summary>
+        /// Формируем хеши для набора файлов
+        /// </summary>
+        /// <param name="pathList">Список путей к файлам изображений</param>
+        /// <param name="isNeedMedianFilter">Флаг необходимости использования медианного фильтра</param>
+        /// <returns>Список результатов генерации хешей</returns>
+        public async Task<List<CreateHashTask>> CalculateHashesAsync(IEnumerable<string> pathList, bool isNeedMedianFilter)
         {
-            //Конвертируем список файлов в список задач по генерации хешей
-            Task<CreateHashTask> task = CreateCalculateHashTask(info, isNeedMedianFilter);
-            //Лочим общий список задач
-            lock (taskList)
-                //Добавляем задачу в список
-                taskList.Add(task);
-            //Возвращаем зщадачу из списка
-            return task;
+            if (pathList == null)
+                throw new ArgumentNullException(nameof(pathList));
+
+            CreateHashTask[] result = await Task
+                .WhenAll(pathList.Select(path => CalculateHashAsync(path, isNeedMedianFilter)))
+                .ConfigureAwait(false);
+
+            return result.ToList();
+        }
+
+        /// <summary>
+        /// Обновляем количество ожидающих и выполняемых задач
+        /// </summary>
+        /// <param name="delta">Сдвиг значения счётчика</param>
+        private void UpdatePendingTasksCount(int delta) =>
+            DCTHash.InvokeUpdateCreationStatus(Interlocked.Add(ref pendingTasksCount, delta));
+
+        /// <summary>
+        /// Проверяем, что объект ещё не был очищен
+        /// </summary>
+        private void ThrowIfDisposed()
+        {
+            if (isDisposed)
+                throw new ObjectDisposedException(nameof(MainWork));
         }
 
         /// <summary>
@@ -239,8 +166,11 @@ namespace DCTHashZ.Clases.WorkClases
         /// </summary>
         public void Dispose()
         {
-            //Завершаем работу класса
-            isWork = false;
+            if (isDisposed)
+                return;
+
+            isDisposed = true;
+            executionLimiter.Dispose();
         }
     }
 }

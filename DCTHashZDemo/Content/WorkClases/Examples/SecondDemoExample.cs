@@ -1,11 +1,9 @@
-﻿using DCTHashZ;
+using DCTHashZ;
 using DCTHashZ.Clases.DataClases.ImageWork;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using static DCTHashZ.Clases.DataClases.Global.Enums;
 
@@ -19,7 +17,7 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
         /// <summary>
         /// Класс работы с хешами
         /// </summary>
-        private DCTHash hash;
+        private readonly DCTHash hash;
 
         /// <summary>
         /// Конструктор класса
@@ -29,7 +27,7 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
             //Инициализируем используемые классы
             hash = new DCTHash();
             //Добавляем обработчик события обновления статусов
-            DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;                   
+            DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;
         }
 
 
@@ -51,7 +49,7 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
             ulong taskHash, fileHash;
             bool eqal;
             //Проходимся по файлам получившим хеши
-            foreach(var task in taskList)
+            foreach (var task in taskList)
             {
                 //Получаем хеш задачи
                 taskHash = task.Hash.GetValueOrDefault(0);
@@ -66,17 +64,17 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
                     foreach (var file in taskList)
                     {
                         //Если это не тот же файл
-                        if(file.FileName != task.FileName)
+                        if (file.FileName != task.FileName)
                         {
                             //Если хеш файла был успешно получен
-                            if (file.Status == CreateHashStatuses.Complete) 
+                            if (file.Status == CreateHashStatuses.Complete)
                             {
                                 //ПОлучаем хеш файла
                                 fileHash = file.Hash.GetValueOrDefault(0);
                                 //Сравниваем хеши
                                 eqal = hash.EqalImageHash(taskHash, fileHash);
                                 //ПРоставляем цвет пор равеноству
-                                Console.ForegroundColor = (eqal) ? ConsoleColor.Green : ConsoleColor.Red;                                
+                                Console.ForegroundColor = (eqal) ? ConsoleColor.Green : ConsoleColor.Red;
                                 //Выводим инфу о сравнении
                                 Console.WriteLine($"\t [FileName: {file.FileName}] " +
                                     $"[Hash: {file.Hash.GetValueOrDefault(0)}] " +
@@ -88,46 +86,50 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
                             //Если у этого файла нет хеша
                             else
                                 //Просто выводим статус
-                                Console.WriteLine($"\t [FileName: {file.FileName}] [Status: {file.Status}]");                            
+                                Console.WriteLine($"\t [FileName: {file.FileName}] [Status: {file.Status}]");
                         }
                     }
                 }
             }
         }
-        
+
 
 
         /// <summary>
         /// Первый вариант демо-программы
         /// </summary>
         /// <param name="scanPath">Путь для сканирования</param>
-        public void Start(string scanPath)
+        public async Task StartAsync(string scanPath)
         {
             //ВЫводим дополнительную инфу в консоль
             Console.WriteLine("Second demo example was started.");
-            
-            //ПОлучаем список файлов из директории сканирования
-            List<string> paths = Directory.GetFiles(scanPath).ToList();
-            //ВЫводим дополнительную инфу в консоль
-            Console.WriteLine($"Find {paths.Count} files.");
-            Console.WriteLine($"Hash generation started.");
-            //Добавляем задачи генерации хешей
-            List<Task<CreateHashTask>> tasks = hash.AddTasksAsync(paths, false);
-            //Переходим к новой строке
-            Console.WriteLine();
-            //Ждём завершения всех задач
-            Task.WaitAll(tasks.ToArray(), -1);
-            //Получаем список результатов выполнения задач
-            List<CreateHashTask> results = tasks
-                .Select(task => task.Result).ToList();
-            //ВЫполняем сравнение и вывод результатов
-            EqualResults(results);
 
-            //Запрещаем закрытие программы до 
-            //нажатия кнопки "Enter"
-            Console.ReadLine();
-            //Завершаем работу с хешами
-            hash.Dispose();
+            try
+            {
+                //ПОлучаем список файлов из директории сканирования
+                List<string> paths = Directory.GetFiles(scanPath).ToList();
+                //ВЫводим дополнительную инфу в консоль
+                Console.WriteLine($"Find {paths.Count} files.");
+                Console.WriteLine($"Hash generation started.");
+                //Запускаем генерацию хешей
+                List<CreateHashTask> results = await hash
+                    .CalculateHashesAsync(paths, false)
+                    .ConfigureAwait(false);
+                //Переходим к новой строке
+                Console.WriteLine();
+                //ВЫполняем сравнение и вывод результатов
+                EqualResults(results);
+
+                //Запрещаем закрытие программы до 
+                //нажатия кнопки "Enter"
+                Console.ReadLine();
+            }
+            finally
+            {
+                DCTHash.UpdateCreationStatus -= DCTHash_UpdateCreationStatus;
+                //Завершаем работу с хешами
+                hash.Dispose();
+            }
         }
     }
 }

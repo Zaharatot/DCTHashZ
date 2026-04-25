@@ -1,11 +1,9 @@
-﻿using DCTHashZ;
+using DCTHashZ;
 using DCTHashZ.Clases.DataClases.ImageWork;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace DCTHashZDemo.Content.WorkClases.Examples
@@ -38,17 +36,14 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
         /// <summary>
         /// Метод отображения сгенерированных хешей
         /// </summary>
-        /// <param name="tasks">Список завершённых задач</param>
-        private void WriteResult(List<Task<CreateHashTask>> tasks)
+        /// <param name="results">Список результатов генерации</param>
+        private void WriteResult(List<CreateHashTask> results)
         {
-            CreateHashTask result;
             //Тут просто вывожу результаты создания хешей
             Console.WriteLine("Hash list creation complete!");
-            //Проходимся по задачам
-            foreach (var task in tasks)
+            //Проходимся по результатам
+            foreach (var result in results)
             {
-                //Получаем результат выполнения задачи
-                result = task.Result;
                 //Выводим его в консоль
                 Console.WriteLine($"\t[Status: {result.Status}] " +
                     $"[Hash: {result.Hash.GetValueOrDefault(0)}] " +
@@ -56,39 +51,46 @@ namespace DCTHashZDemo.Content.WorkClases.Examples
             }
         }
 
-        
+
 
 
         /// <summary>
         /// Первый вариант демо-программы
         /// </summary>
         /// <param name="scanPath">Путь для сканирования</param>
-        public void Start(string scanPath)
+        public async Task StartAsync(string scanPath)
         {
             //ВЫводим дополнительную инфу в консоль
             Console.WriteLine("First demo example was started.");
             //Добавляем обработчик события обновления статусов
             DCTHash.UpdateCreationStatus += DCTHash_UpdateCreationStatus;
-            //Инициализируем класс работы с хешем
-            using (DCTHash hash = new DCTHash())
+            try
             {
-                //ПОлучаем список файлов из директории сканирования
-                List<string> paths = Directory.GetFiles(scanPath).ToList();
-                //ВЫводим дополнительную инфу в консоль
-                Console.WriteLine($"Find {paths.Count} files.");
-                Console.WriteLine($"Hash generation started.");
-                //Добавляем задачи генерации хешей
-                List<Task<CreateHashTask>> tasks = hash.AddTasksAsync(paths, false);
-                //Переходим к новой строке
-                Console.WriteLine();
-                //Ждём завершения всех задач
-                Task.WaitAll(tasks.ToArray(), -1);
-                //ВЫводим на экран результат генерации
-                WriteResult(tasks);
+                //Инициализируем класс работы с хешем
+                using (DCTHash hash = new DCTHash())
+                {
+                    //ПОлучаем список файлов из директории сканирования
+                    List<string> paths = Directory.GetFiles(scanPath).ToList();
+                    //ВЫводим дополнительную инфу в консоль
+                    Console.WriteLine($"Find {paths.Count} files.");
+                    Console.WriteLine($"Hash generation started.");
+                    //Запускаем генерацию хешей
+                    List<CreateHashTask> results = await hash
+                        .CalculateHashesAsync(paths, false)
+                        .ConfigureAwait(false);
+                    //Переходим к новой строке
+                    Console.WriteLine();
+                    //ВЫводим на экран результат генерации
+                    WriteResult(results);
 
-                //Запрещаем закрытие программы до 
-                //нажатия кнопки "Enter"
-                Console.ReadLine();
+                    //Запрещаем закрытие программы до 
+                    //нажатия кнопки "Enter"
+                    Console.ReadLine();
+                }
+            }
+            finally
+            {
+                DCTHash.UpdateCreationStatus -= DCTHash_UpdateCreationStatus;
             }
         }
     }

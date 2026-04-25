@@ -2,23 +2,145 @@
 
 #### EN description:
 
-This library implements the image comparison functionality and is intended for applications written in C#.
-The reason for writing my own implementation is quite simple — I just could not find any analogues that would allow a developer to do whatever with the library (e.g., [pHash library](https://github.com/pgrho/phash) is distributed under the GPL, therefore, it cannot be used in any kind of commercial projects without publishing their source code in the open domain). However, I was in the middle of writing my own project which, in theory, can become a commercial one in the future, and did not want any complications involved with using pHash library. Having found no alternatives, I created my own implementation which is totally open and free — you can do whatever you want with the code provided (within the boundaries of Apache 2.0 license).
+This library implements perceptual image comparison for C# applications.
+The project was created as an open alternative to pHash-based libraries with restrictive licensing for commercial use. DCTHashZ is distributed under Apache 2.0.
 
-Comparison is implemented by the way of hash generation via Discrete Cosine Transform Based Hash, also known as pHash method. Materials used were mainly taken from [this](https://habr.com/ru/post/237307/) and several other posts on Habr.com. Also, Wikipedia and several scientific works on the topis were utilised (regretfully, I did not save the relevant links). In addition, the results obtained were compared to the output of [demo pHash](https://www.phash.org/demo/), wherein I tried to match my results to the baseline ones.
+Comparison is based on Discrete Cosine Transform Based Hash, also known as pHash. The implementation was assembled from public materials, including [this Habr article](https://habr.com/ru/post/237307/), Wikipedia, and practical comparison against the [demo pHash](https://www.phash.org/demo/).
 
-The principles of operating this library are quite simple. There is "DCTHash" facade class, which comprises all interaction methods for this library. To create a hash generation request it is necessary to invoke the "AddTasks" method, supplying it with a list of paths to folders containing image files. To obtain the results it is necessary to subscribe to the "CompleteCeneration" event, it will output a list of results comprising a file name, a path to the file, hash of the indicated image and hash generation status. To track the result of hash generation you can subscribe to the "UpdateCreationStatus" event, it will return consolidated information on the generation process. In particular, the output will comprise a number of tasks for generation process, a number of tasks being performed, a number of completed tasks and a total number of tasks in the list.
+The main entry point is the `DCTHash` facade class. The library now uses an asynchronous API:
 
-For a more on-hands example you can peruse a demo project ("DCTHashZDemo") by downloading this repository and opening the solution. There are 2 operating modes — a simple hash generation mode and a file comparison mode. The compiled library and the demo project can be found in the [Compilation](https://github.com/Zaharatot/DCTHashZ/tree/main/Compilation) folder.
+- `CalculateHashAsync(string path, bool isNeedMedianFilter = false)` calculates the hash for an image file.
+- `CalculateHashAsync(IImageInfo info, bool isNeedMedianFilter = false)` calculates the hash for a preloaded image.
+- `CalculateHashesAsync(IEnumerable<string> paths, bool isNeedMedianFilter = false)` calculates hashes for a set of files.
+- `GetHashSimilarity(ulong first, ulong second)` returns the similarity score.
+- `EqalImageHash(ulong first, ulong second)` checks whether two hashes are considered equal.
+
+To monitor progress you can subscribe to the `UpdateCreationStatus` event. It returns the current number of hash-generation operations that are still pending or in progress.
+
+Example for file paths:
+
+```csharp
+using DCTHashZ;
+using DCTHashZ.Clases.DataClases.ImageWork;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public async Task<List<CreateHashTask>> BuildHashesAsync(IEnumerable<string> paths)
+{
+    using (var hash = new DCTHash())
+    {
+        return await hash.CalculateHashesAsync(paths);
+    }
+}
+```
+
+Example for a single file:
+
+```csharp
+using DCTHashZ;
+using DCTHashZ.Clases.DataClases.ImageWork;
+using System.Threading.Tasks;
+
+public async Task<CreateHashTask> BuildHashAsync(string path)
+{
+    using (var hash = new DCTHash())
+    {
+        return await hash.CalculateHashAsync(path);
+    }
+}
+```
+
+Example for comparing two hashes:
+
+```csharp
+using DCTHashZ;
+
+public bool IsSameImage(ulong first, ulong second)
+{
+    using (var hash = new DCTHash())
+    {
+        return hash.EqalImageHash(first, second);
+    }
+}
+```
+
+The demo project `DCTHashZDemo` was also updated to the async API and contains examples for:
+
+- batch hash generation from file paths;
+- hash comparison between images;
+- hash generation from preloaded image data.
+
+Compiled outputs for the library and the demo can be found in the [Compilation](https://github.com/Zaharatot/DCTHashZ/tree/main/Compilation) folder.
 
 
 #### RU Description/Описание на русском:
 
-Данная библиотека реализует функционал сравнения изображений, и предназначена для приложений, написанных на языке C#.
-Причина написания своей реализации проста — я просто не нашёл аналогов, которые давали бы разработчику возможность делать с библиотекой что угодно ([библиотека pHash](https://github.com/pgrho/phash) распространяется под GPL, и это означает что его нельзя использовать в коммерческих проектах, не публикуя в открытую их исходный код). Я же, писал свой небольшой проект, который в теории мог дорасти до коммерческого, и не хотел этих проблем с библиотекой pHash. Не найдя других альтернатив, я создал свою реализацию, которая будет полностью открытой — делайте с ней что хотите (в рамках лицензии Apache 2.0).
+Данная библиотека реализует перцептивное сравнение изображений для приложений на C#.
+Проект был создан как открытая альтернатива pHash-реализациям с неудобными ограничениями по лицензированию в коммерческом использовании. DCTHashZ распространяется по лицензии Apache 2.0.
 
-Сравнение реализовано через генерацию хеша, путём дискретного косинусного преобразования (Discrete Cosine Transform Based Hash), оно же — pHash. Материалы брались в основном из [этой](https://habr.com/ru/post/237307/) и ещё нескольких статей на Хабре. Плюс — Wiki, и несколько научных работ по теме (на которые я, к сожалению, не сохранил ссылок). Дополнительно, я сверял получаемые результаты с [demo pHash](https://www.phash.org/demo/), стараясь получить близкие к эталонным.
+Сравнение реализовано через генерацию хеша методом дискретного косинусного преобразования, то есть pHash. В основе реализации лежат открытые материалы, включая [эту статью на Хабре](https://habr.com/ru/post/237307/), Wikipedia и сверку результатов с [demo pHash](https://www.phash.org/demo/).
 
-Принцип работы с данной библиотекой довольно прост. Есть фасадный класс "DCTHash", в который вынесены все методы общения с этой библиотекой. Для создания запроса на генерацию хешей, необходимо вызвать метод "AddTasks", передав в него список путей к файлам изображений. Для получения результатов необходимо подписаться на ивент "CompleteCeneration" — он вернёт список результатов, в котором будет имя файла, путь к нему, хеш этого изображения и статус генерации хеша. Для отслеживания результатов генерации хеша, можно подписаться на событие "UpdateCreationStatus" — оно будет возвращать комплексную информацию о процессе генерации. В частности — количество задач, ожидающих генерации, количество задач в работе, количество завершённых задач и общее количество задач в списке.
+Основная точка входа в библиотеку — фасадный класс `DCTHash`. Сейчас библиотека использует асинхронный API:
 
-Более подробно посмотреть на это можно в демо-проекте ("DCTHashZDemo"), скачав этот репозиторий и открыв решение. Там есть 2 варианта работы — простая генерация хешей, и сравнение файлов. Собранные библиотека и демо-проект можно найти в папке [Compilation](https://github.com/Zaharatot/DCTHashZ/tree/main/Compilation).
+- `CalculateHashAsync(string path, bool isNeedMedianFilter = false)` вычисляет хеш изображения по пути к файлу.
+- `CalculateHashAsync(IImageInfo info, bool isNeedMedianFilter = false)` вычисляет хеш для уже загруженного изображения.
+- `CalculateHashesAsync(IEnumerable<string> paths, bool isNeedMedianFilter = false)` вычисляет хеши для набора файлов.
+- `GetHashSimilarity(ulong first, ulong second)` возвращает степень сходства двух хешей.
+- `EqalImageHash(ulong first, ulong second)` проверяет, считаются ли два хеша одинаковыми.
+
+Для отслеживания прогресса можно подписаться на событие `UpdateCreationStatus`. Оно возвращает текущее количество операций генерации хеша, которые ещё ожидают выполнения или находятся в работе.
+
+Пример расчёта хешей для списка файлов:
+
+```csharp
+using DCTHashZ;
+using DCTHashZ.Clases.DataClases.ImageWork;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public async Task<List<CreateHashTask>> BuildHashesAsync(IEnumerable<string> paths)
+{
+    using (var hash = new DCTHash())
+    {
+        return await hash.CalculateHashesAsync(paths);
+    }
+}
+```
+
+Пример расчёта хеша для одного файла:
+
+```csharp
+using DCTHashZ;
+using DCTHashZ.Clases.DataClases.ImageWork;
+using System.Threading.Tasks;
+
+public async Task<CreateHashTask> BuildHashAsync(string path)
+{
+    using (var hash = new DCTHash())
+    {
+        return await hash.CalculateHashAsync(path);
+    }
+}
+```
+
+Пример сравнения двух хешей:
+
+```csharp
+using DCTHashZ;
+
+public bool IsSameImage(ulong first, ulong second)
+{
+    using (var hash = new DCTHash())
+    {
+        return hash.EqalImageHash(first, second);
+    }
+}
+```
+
+Демо-проект `DCTHashZDemo` также обновлён под новый async API и содержит примеры:
+
+- пакетной генерации хешей по путям к файлам;
+- сравнения изображений по хешам;
+- генерации хеша из заранее загруженных данных изображения.
+
+Собранные библиотека и демо-проект находятся в папке [Compilation](https://github.com/Zaharatot/DCTHashZ/tree/main/Compilation).

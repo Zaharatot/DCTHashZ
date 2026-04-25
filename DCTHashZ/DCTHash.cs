@@ -1,18 +1,10 @@
-﻿using DCTHashZ.Clases.DataClases;
 using DCTHashZ.Clases.DataClases.Global;
 using DCTHashZ.Clases.DataClases.ImageWork;
 using DCTHashZ.Clases.DataClases.Interfaces;
 using DCTHashZ.Clases.WorkClases;
-using DCTHashZ.Clases.WorkClases.Filters;
 using DCTHashZ.Clases.WorkClases.HashWork;
-using DCTHashZ.Clases.WorkClases.Loader;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using static DCTHashZ.Clases.DataClases.Global.Delegates;
 
@@ -32,11 +24,11 @@ namespace DCTHashZ
         /// <summary>
         /// Основной рабочий класс
         /// </summary>
-        private MainWork mainWork;
+        private readonly MainWork mainWork;
         /// <summary>
         /// Класс сравнения хешей
         /// </summary>
-        private EqualDctHash equalHash;
+        private readonly EqualDctHash equalHash;
 
         /// <summary>
         /// Конструктор класса
@@ -48,7 +40,7 @@ namespace DCTHashZ
             equalHash = new EqualDctHash(Constants.DCT_HASH_EQUAL_SENSIVITY);
         }
 
-      
+
         /// <summary>
         /// Метод вызова события обновления статусов создания хешей
         /// </summary>
@@ -57,42 +49,53 @@ namespace DCTHashZ
             //Вызываем внешний ивент
             UpdateCreationStatus?.Invoke(waitCount);
 
-
-
         /// <summary>
-        /// Добавляем задачи для генерации хешей
+        /// Рассчитываем хеш изображения по пути к файлу
         /// </summary>
+        /// <param name="path">Путь к файлу на диске</param>
         /// <param name="isNeedMedianFilter">
-        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения. 
-        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при 
-        ///  итоговом сравнении хешей, она существенно уменьшает производительность. 
-        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной 
+        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения.
+        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при
+        ///  итоговом сравнении хешей, она существенно уменьшает производительность.
+        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной
         ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
         ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
         /// </param>
-        /// <param name="paths">Список путей к файлам изображений</param>
-        /// <returns>Список задач по генерации хешей</returns>
-        public List<Task<CreateHashTask>> AddTasksAsync(List<string> paths, bool isNeedMedianFilter = false) =>
-            //Вызываем внутренний метод
-            mainWork.AddTasksAsync(paths, isNeedMedianFilter);
+        /// <returns>Результат генерации хеша</returns>
+        public Task<CreateHashTask> CalculateHashAsync(string path, bool isNeedMedianFilter = false) =>
+            mainWork.CalculateHashAsync(path, isNeedMedianFilter);
 
         /// <summary>
-        /// Добавляем задачу для генерации хешей по загруженной картинке
+        /// Рассчитываем хеш загруженного изображения
         /// </summary>
-        /// <param name="isNeedMedianFilter">
-        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения. 
-        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при 
-        ///  итоговом сравнении хешей, она существенно уменьшает производительность. 
-        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной 
-        ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
-        ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
-        /// </param>
         /// <param name="info">Класс информации об изображении, наследуемый от интерфейса</param>
-        /// <returns>Задача по генерации хешей</returns>
-        public Task<CreateHashTask> AddTaskAsync(IImageInfo info, bool isNeedMedianFilter = false) =>
-            //Вызываем внутренний метод
-            mainWork.AddTaskAsync(info, isNeedMedianFilter);
+        /// <param name="isNeedMedianFilter">
+        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения.
+        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при
+        ///  итоговом сравнении хешей, она существенно уменьшает производительность.
+        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной
+        ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
+        ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
+        /// </param>
+        /// <returns>Результат генерации хеша</returns>
+        public Task<CreateHashTask> CalculateHashAsync(IImageInfo info, bool isNeedMedianFilter = false) =>
+            mainWork.CalculateHashAsync(info, isNeedMedianFilter);
 
+        /// <summary>
+        /// Рассчитываем хеши для набора файлов
+        /// </summary>
+        /// <param name="paths">Список путей к файлам изображений</param>
+        /// <param name="isNeedMedianFilter">
+        ///  Данный флаг активирует медианную фильтрацию, при выполнении упрощения изображения.
+        ///  ВНИМАНИЕ! Хоть медианная фильтрация и добавляет некоторый процент точности при
+        ///  итоговом сравнении хешей, она существенно уменьшает производительность.
+        ///  Для сравнения, построение хеша для изображения 600х600px, без медианной
+        ///  фильтрации занимает ~0.56с, а с ней - в районе ~5с (т.е. примерно в 10 раз больше времени).
+        ///  Учитывая вышесказанное, я не рекомендую использовать данный флаг.
+        /// </param>
+        /// <returns>Список результатов генерации хешей</returns>
+        public Task<List<CreateHashTask>> CalculateHashesAsync(IEnumerable<string> paths, bool isNeedMedianFilter = false) =>
+            mainWork.CalculateHashesAsync(paths, isNeedMedianFilter);
 
         /// <summary>
         /// Получаем схожесть хешей
@@ -120,7 +123,7 @@ namespace DCTHashZ
         public void Dispose()
         {
             //Завершаем работу основного класса
-            mainWork?.Dispose();
+            mainWork.Dispose();
         }
     }
 }

@@ -1,12 +1,4 @@
-﻿using DCTHashZDemo.Content;
-using DCTHashZ;
-using DCTHashZ.Clases.DataClases.ImageWork;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using DCTHashZDemo.Content.WorkClases.Examples;
 
 namespace DCTHashZDemo
@@ -29,19 +21,19 @@ namespace DCTHashZDemo
                 case 1:
                     {
                         //Вызываем работу первого примера
-                        new FirstDemoExample().Start(scanPath);
+                        new FirstDemoExample().StartAsync(scanPath).GetAwaiter().GetResult();
                         break;
                     }
                 case 2:
                     {
                         //Вызываем работу второго примера
-                        new SecondDemoExample().Start(scanPath);
+                        new SecondDemoExample().StartAsync(scanPath).GetAwaiter().GetResult();
                         break;
                     }
                 case 3:
                     {
                         //Вызываем работу третьего примера
-                        new ThridDemoExample().Start(scanPath);
+                        new ThridDemoExample().StartAsync(scanPath).GetAwaiter().GetResult();
                         break;
                     }
             }
